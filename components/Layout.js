@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
       </AppBar>
       <Container className={classes.main}>{children}</Container>
       <footer className={classes.footer}>
-        All Right Reserved | Shop @ NextJS
+        <Typography>All Right Reserved | Shop @ NextJS</Typography>
       </footer>
     </div>
   );
