@@ -9,12 +9,18 @@ import {
   ThemeProvider,
   createTheme,
   CssBaseline,
+  Switch,
 } from '@material-ui/core';
+import { orange } from '@material-ui/core/colors';
+import { useContext } from 'react';
 
 import useStyles from '../utils/styles';
-import { orange } from '@material-ui/core/colors';
+import { Store } from '../utils/Store';
 
 const Layout = ({ title, description, children }) => {
+  const { state, dispatch } = useContext(Store);
+  const { darkMode } = state;
+
   const theme = createTheme({
     typography: {
       h1: {
@@ -32,7 +38,7 @@ const Layout = ({ title, description, children }) => {
       },
     },
     palette: {
-      type: 'light',
+      type: darkMode ? 'dark' : 'light',
       primary: {
         main: orange[500],
       },
@@ -43,6 +49,10 @@ const Layout = ({ title, description, children }) => {
   });
 
   const classes = useStyles();
+
+  const darkModeChangeHandler = () => {
+    dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
+  };
 
   return (
     <div>
@@ -62,6 +72,7 @@ const Layout = ({ title, description, children }) => {
             </NextLink>
             <div className={classes.grow}></div>
             <div>
+              <Switch checked={false} onChange={darkModeChangeHandler}></Switch>
               <NextLink href='/cart' passHref>
                 <Link>Cart</Link>
               </NextLink>
