@@ -11,16 +11,20 @@ import {
 } from '@material-ui/core';
 import Image from 'next/image';
 
-import { data } from '../../utils/data';
+// import { data } from '../../utils/data';
 import useStyles from '../../utils/styles';
 import Layout from '../../components/Layout';
+import db from '../../utils/db';
+import Product from '../../models/Product';
 
-const ProductDetailsPage = () => {
+const ProductDetailsPage = (props) => {
   const classes = useStyles();
-  const router = useRouter();
-  const { slug } = router.query;
+  // const router = useRouter();
+  // const { slug } = router.query;
 
-  const product = data.products.find((p) => p.slug === slug);
+  // const product = data.products.find((p) => p.slug === slug);
+
+  const { product } = props;
 
   if (!product) {
     return <div>Product Not Found</div>;
@@ -104,6 +108,24 @@ const ProductDetailsPage = () => {
       </Grid>
     </Layout>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const {
+    params: { slug },
+  } = context;
+
+  await db.connectDB();
+
+  const product = await Product.findOne({ slug }).lean();
+
+  await db.disconnectDB();
+
+  return {
+    props: {
+      product: db.converDocToObj(product),
+    },
+  };
 };
 
 export default ProductDetailsPage;

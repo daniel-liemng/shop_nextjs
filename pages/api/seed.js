@@ -13,7 +13,7 @@ handler.get(async (req, res) => {
 
   await db.disconnectDB();
 
-  res.send('Seeded Successfully');
+  res.send({ message: 'Seeded Successfully' });
 });
 
 export default handler;
