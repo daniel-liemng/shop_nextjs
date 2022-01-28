@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import {
   Grid,
@@ -16,6 +16,9 @@ import useStyles from '../../utils/styles';
 import Layout from '../../components/Layout';
 import db from '../../utils/db';
 import Product from '../../models/Product';
+import axios from 'axios';
+import { useContext } from 'react';
+import { Store } from '../../utils/Store';
 
 const ProductDetailsPage = (props) => {
   const classes = useStyles();
@@ -25,6 +28,19 @@ const ProductDetailsPage = (props) => {
   // const product = data.products.find((p) => p.slug === slug);
 
   const { product } = props;
+
+  const { dispatch } = useContext(Store);
+
+  const addToCartHandler = async () => {
+    const { data } = await axios.get(`/api/products/${product._id}`);
+
+    if (data.countInStock <= 0) {
+      window.alert('Sorry, product is out of stock');
+      return;
+    }
+
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1 } });
+  };
 
   if (!product) {
     return <div>Product Not Found</div>;
@@ -98,7 +114,12 @@ const ProductDetailsPage = (props) => {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button fullWidth variant='contained' color='primary'>
+                <Button
+                  fullWidth
+                  variant='contained'
+                  color='primary'
+                  onClick={() => addToCartHandler()}
+                >
                   Add to cart
                 </Button>
               </ListItem>
