@@ -1,4 +1,4 @@
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import {
   Grid,
@@ -22,7 +22,7 @@ import { Store } from '../../utils/Store';
 
 const ProductDetailsPage = (props) => {
   const classes = useStyles();
-  // const router = useRouter();
+  const router = useRouter();
   // const { slug } = router.query;
 
   // const product = data.products.find((p) => p.slug === slug);
@@ -40,6 +40,7 @@ const ProductDetailsPage = (props) => {
     }
 
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1 } });
+    router.push('/cart');
   };
 
   if (!product) {

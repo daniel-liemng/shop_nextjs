@@ -55,7 +55,7 @@ const Layout = ({ title, description, children }) => {
   const darkModeChangeHandler = () => {
     dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
     const newDarkMode = !darkMode;
-    Cookies.set('dartMode', newDarkMode ? 'ON' : 'OFF');
+    Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
   };
 
   return (
@@ -76,19 +76,24 @@ const Layout = ({ title, description, children }) => {
             </NextLink>
             <div className={classes.grow}></div>
             <div>
-              <Switch checked={false} onChange={darkModeChangeHandler}></Switch>
+              <Switch
+                checked={darkMode}
+                onChange={darkModeChangeHandler}
+              ></Switch>
               <NextLink href='/cart' passHref>
                 <Link>
-                  {cart.cartItems.length > 0 ? (
-                    <Badge
-                      color='secondary'
-                      badgeContent={cart.cartItems.length}
-                    >
-                      Cart
-                    </Badge>
-                  ) : (
-                    'Cart'
-                  )}
+                  <Typography component={'span'}>
+                    {cart.cartItems.length > 0 ? (
+                      <Badge
+                        color='secondary'
+                        badgeContent={cart.cartItems.length}
+                      >
+                        Cart
+                      </Badge>
+                    ) : (
+                      'Cart'
+                    )}
+                  </Typography>
                 </Link>
               </NextLink>
               <NextLink href='/login' passHref>
@@ -97,6 +102,7 @@ const Layout = ({ title, description, children }) => {
             </div>
           </Toolbar>
         </AppBar>
+
         <Container className={classes.main}>{children}</Container>
         <footer className={classes.footer}>
           <Typography>All Right Reserved | Shop @ NextJS</Typography>
