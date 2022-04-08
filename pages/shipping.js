@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
+import { Store } from '../utils/Store';
 
 const Shipping = () => {
   const router = useRouter();
+  const { state } = useContext(Store);
+  const { userInfo } = state;
 
-  router.push('/login');
+  if (!userInfo) {
+    router.push('/login?redirect=/shipping');
+  }
+
   return <Layout title='shipping'>Shipping</Layout>;
 };
 
