@@ -14,11 +14,35 @@ import NextLink from 'next/link';
 import Layout from '../components/Layout';
 import db from '../utils/db';
 import Product from '../models/Product';
+import axios from 'axios';
+import { useContext } from 'react';
+import { Store } from '../utils/Store';
+import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
-export default function Home(props) {
-  console.log(props);
+const Home = (props) => {
+  const { state, dispatch } = useContext(Store);
+  const router = useRouter();
 
   const { products } = props;
+
+  const addToCartHandler = async (product) => {
+    const existItem = state.cart.cartItems.find((x) => x._id === product._id);
+    const actualQuantity = existItem ? existItem.quantity + 1 : 1;
+
+    const { data } = await axios.get(`/api/products/${product._id}`);
+
+    if (data.countInStock < actualQuantity) {
+      window.alert('Sorry, product is out of stock');
+      return;
+    }
+
+    dispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...product, quantity: actualQuantity },
+    });
+    router.push('/cart');
+  };
 
   return (
     <Layout>
@@ -41,7 +65,11 @@ export default function Home(props) {
               </NextLink>
               <CardActions>
                 <Typography>$ {product.price}</Typography>
-                <Button size='small' color='primary'>
+                <Button
+                  size='small'
+                  color='primary'
+                  onClick={() => addToCartHandler(product)}
+                >
                   Add to cart
                 </Button>
               </CardActions>
@@ -51,7 +79,7 @@ export default function Home(props) {
       </Grid>
     </Layout>
   );
-}
+};
 
 export const getServerSideProps = async () => {
   await db.connectDB();
@@ -66,3 +94,5 @@ export const getServerSideProps = async () => {
     },
   };
 };
+
+export default dynamic(() => Promise.resolve(Home), { ssr: false });
