@@ -1,24 +1,24 @@
 import Head from 'next/head';
 import NextLink from 'next/link';
+import dynamic from 'next/dynamic';
+import { createTheme } from '@mui/material/styles';
 import {
+  ThemeProvider,
+  CssBaseline,
   AppBar,
   Toolbar,
   Typography,
   Container,
   Link,
-  ThemeProvider,
-  createTheme,
-  CssBaseline,
   Switch,
   Badge,
   Button,
   Menu,
   MenuItem,
-} from '@material-ui/core';
-import { orange } from '@material-ui/core/colors';
+  Box,
+} from '@mui/material';
 import { useContext, useState } from 'react';
 
-import useStyles from '../utils/styles';
 import { Store } from '../utils/Store';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
@@ -45,17 +45,49 @@ const Layout = ({ title, description, children }) => {
       },
     },
     palette: {
-      type: darkMode ? 'dark' : 'light',
+      mode: darkMode ? 'dark' : 'light',
       primary: {
-        main: orange[500],
+        main: '#ff595e',
       },
       secondary: {
-        main: '#208080',
+        main: '#43aa8b',
       },
     },
   });
 
-  const classes = useStyles();
+  const navbarStyle = {
+    backgroundColor: '#203040',
+    '& a': {
+      color: '#ffffff',
+      marginLeft: 10,
+    },
+  };
+
+  const brandStyle = {
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
+    // flexGrow: 1,
+  };
+
+  const growStyle = {
+    flexGrow: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  };
+
+  const mainStyle = {
+    minHeight: '80vh',
+  };
+  const footerStyle = {
+    textAlign: 'center',
+    marginTop: 10,
+  };
+
+  const navbarButtonStyle = {
+    color: '#fff',
+    textTransform: 'initial',
+  };
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -91,15 +123,19 @@ const Layout = ({ title, description, children }) => {
 
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppBar position='static' className={classes.navbar}>
+        <AppBar position='static' sx={navbarStyle}>
           <Toolbar>
-            <NextLink href='/' passHref>
-              <Link>
-                <Typography className={classes.brand}>SHOP</Typography>
-              </Link>
-            </NextLink>
-            <div className={classes.grow}></div>
-            <div>
+            <Box sx={growStyle}>
+              <NextLink href='/' passHref>
+                <Link>
+                  <Typography sx={{ ...brandStyle, flexGrow: 1 }}>
+                    SHOP
+                  </Typography>
+                </Link>
+              </NextLink>
+            </Box>
+
+            <Box>
               <Switch
                 checked={darkMode}
                 onChange={darkModeChangeHandler}
@@ -124,7 +160,7 @@ const Layout = ({ title, description, children }) => {
               {userInfo ? (
                 <>
                   <Button
-                    className={classes.navbarButton}
+                    sx={navbarButtonStyle}
                     id='basic-button'
                     aria-controls={open ? 'basic-menu' : undefined}
                     aria-haspopup='true'
@@ -152,12 +188,12 @@ const Layout = ({ title, description, children }) => {
                   <Link>Login</Link>
                 </NextLink>
               )}
-            </div>
+            </Box>
           </Toolbar>
         </AppBar>
 
-        <Container className={classes.main}>{children}</Container>
-        <footer className={classes.footer}>
+        <Container sx={mainStyle}>{children}</Container>
+        <footer sx={footerStyle}>
           <Typography>All Right Reserved | Shop @ NextJS</Typography>
         </footer>
       </ThemeProvider>
@@ -165,4 +201,4 @@ const Layout = ({ title, description, children }) => {
   );
 };
 
-export default Layout;
+export default dynamic(() => Promise.resolve(Layout), { ssr: false });

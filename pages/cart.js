@@ -14,7 +14,7 @@ import {
   List,
   ListItem,
   Card,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';

@@ -1,24 +1,34 @@
-import { useEffect } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { CacheProvider } from '@emotion/react';
+import { SnackbarProvider } from 'notistack';
 
 import '../styles/globals.css';
 import { StoreProvider } from '../utils/Store';
+import createEmotionCache from '../utils/createEmotionCache';
 
-// import Layout from '../components/Layout';
+const clientSideEmotionCache = createEmotionCache();
 
-function MyApp({ Component, pageProps }) {
-  // Fix SSR - MUI styles
-  useEffect(() => {
-    const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
-    }
-  }, []);
+const myApp = (props) => {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   return (
-    <StoreProvider>
-      <Component {...pageProps} />
-    </StoreProvider>
+    <CacheProvider value={emotionCache}>
+      <SnackbarProvider
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <StoreProvider>
+          <Component {...pageProps} />
+        </StoreProvider>
+      </SnackbarProvider>
+    </CacheProvider>
   );
-}
+};
 
-export default MyApp;
+export default myApp;
+
+myApp.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  emotionCache: PropTypes.object,
+  pageProps: PropTypes.object.isRequired,
+};

@@ -8,11 +8,9 @@ import {
   Typography,
   Card,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 import Image from 'next/image';
 
-// import { data } from '../../utils/data';
-import useStyles from '../../utils/styles';
 import Layout from '../../components/Layout';
 import db from '../../utils/db';
 import Product from '../../models/Product';
@@ -21,7 +19,11 @@ import { useContext } from 'react';
 import { Store } from '../../utils/Store';
 
 const ProductDetailsPage = (props) => {
-  const classes = useStyles();
+  const sectionStyle = {
+    marginTop: 10,
+    marginBottom: 10,
+  };
+
   const router = useRouter();
   // const { slug } = router.query;
 
@@ -55,7 +57,7 @@ const ProductDetailsPage = (props) => {
 
   return (
     <Layout title={product.name} description={product.description}>
-      <div className={classes.section}>
+      <div sx={sectionStyle}>
         <NextLink href='/' passHref>
           <Link>
             <Typography>Back to products</Typography>

@@ -1,3 +1,13 @@
+// import {
+//   Button,
+//   Card,
+//   CardActionArea,
+//   CardActions,
+//   CardContent,
+//   CardMedia,
+//   Grid,
+//   Typography,
+// } from '@material-ui/core';
 import {
   Button,
   Card,
@@ -7,7 +17,7 @@ import {
   CardMedia,
   Grid,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import NextLink from 'next/link';
 
 // import { data } from '../utils/data';
