@@ -97,7 +97,7 @@ const Register = () => {
                   variant='outlined'
                   id='name'
                   label='Name'
-                  inputProps={{ type: 'name' }}
+                  inputProps={{ type: 'text' }}
                   error={Boolean(errors.name)}
                   helperText={
                     errors.name
@@ -216,7 +216,6 @@ const Register = () => {
           </ListItem>
         </List>
       </form>
-      <Button variant='contained'>Text</Button>
     </Layout>
   );
 };
