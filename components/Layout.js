@@ -96,8 +96,12 @@ const Layout = ({ title, description, children }) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (e, redirect) => {
     setAnchorEl(null);
+
+    if (redirect) {
+      router.push(redirect);
+    }
   };
 
   const logoutHandler = () => {
@@ -178,8 +182,14 @@ const Layout = ({ title, description, children }) => {
                       'aria-labelledby': 'basic-button',
                     }}
                   >
-                    <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+                    <MenuItem onClick={(e) => handleMenuClose(e, '/profile')}>
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(e) => handleMenuClose(e, '/order-history')}
+                    >
+                      Order History
+                    </MenuItem>
                     <MenuItem onClick={logoutHandler}>Logout</MenuItem>
                   </Menu>
                 </>
