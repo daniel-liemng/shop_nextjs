@@ -6,6 +6,7 @@ import { SnackbarProvider } from 'notistack';
 import '../styles/globals.css';
 import { StoreProvider } from '../utils/Store';
 import createEmotionCache from '../utils/createEmotionCache';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -18,7 +19,9 @@ const myApp = (props) => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <StoreProvider>
-          <Component {...pageProps} />
+          <PayPalScriptProvider deferLoading={true}>
+            <Component {...pageProps} />
+          </PayPalScriptProvider>
         </StoreProvider>
       </SnackbarProvider>
     </CacheProvider>
