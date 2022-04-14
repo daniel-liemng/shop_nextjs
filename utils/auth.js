@@ -28,3 +28,11 @@ export const isAuth = (req, res, next) => {
     res.status(401).send({ message: 'Token is not supplied' });
   }
 };
+
+export const isAdmin = async (req, res, next) => {
+  if (req.user.isAdmin) {
+    next();
+  } else {
+    res.status(401).send({ message: 'User is not Admin' });
+  }
+};
