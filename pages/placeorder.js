@@ -8,14 +8,13 @@ import {
   TableRow,
   Typography,
   Link,
-  MenuItem,
-  Select,
   Button,
   List,
   ListItem,
   Card,
+  CircularProgress,
 } from '@mui/material';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
 import { Store } from '../utils/Store';
@@ -24,6 +23,9 @@ import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import CheckoutWizard from '../components/CheckoutWizard';
+import { useSnackbar } from 'notistack';
+import { getError } from '../utils/error';
+import Cookies from 'js-cookie';
 
 const PlaceOrderScreen = () => {
   const sectionStyle = {
@@ -32,10 +34,14 @@ const PlaceOrderScreen = () => {
   };
 
   const router = useRouter();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { state, dispatch } = useContext(Store);
   const {
+    userInfo,
     cart: { cartItems, shippingAddress, paymentMethod },
   } = state;
+
+  const [loading, setLoading] = useState(false);
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
 
@@ -53,7 +59,44 @@ const PlaceOrderScreen = () => {
     if (!paymentMethod) {
       router.push('/payment');
     }
+    if (cartItems.length === 0) {
+      router.push('/cart');
+    }
   }, []);
+
+  const placeOrderHandler = async () => {
+    closeSnackbar();
+    try {
+      setLoading(true);
+
+      const { data } = await axios.post(
+        '/api/orders',
+        {
+          orderItems: cartItems,
+          shippingAddress,
+          paymentMethod,
+          itemsPrice,
+          taxPrice,
+          shippingPrice,
+          totalPrice,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        },
+      );
+
+      dispatch({ type: 'CLEAR_CART' });
+      Cookies.remove('cartItems');
+      setLoading(false);
+      // redirect to order detail page
+      router.push(`/order/${data._id}`);
+    } catch (error) {
+      setLoading(false);
+      enqueueSnackbar(getError(error), { variant: 'error' });
+    }
+  };
 
   return (
     <Layout title='Shopping Cart'>
@@ -212,8 +255,14 @@ const PlaceOrderScreen = () => {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button variant='contained' color='primary' fullWidth>
-                  Place Order
+                <Button
+                  onClick={placeOrderHandler}
+                  variant='contained'
+                  color='primary'
+                  fullWidth
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress size={30} /> : 'Place Order'}
                 </Button>
               </ListItem>
             </List>

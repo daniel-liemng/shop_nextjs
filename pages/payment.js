@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 import { Store } from '../utils/Store';
 import Layout from '../components/Layout';
-import CheckoutWizard from '../components/checkoutWizard';
+import CheckoutWizard from '../components/CheckoutWizard';
 import {
   Button,
   FormControl,
